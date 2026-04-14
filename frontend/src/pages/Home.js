@@ -22,7 +22,8 @@ const Home = () => {
                 url = `${BASE_URL}/api/todos/search?q=${search}`;
                 }
                 const response = await axios.get(url);
-                dispatch({ type: 'SET_TODO', payload: response.data.data });
+                console.log(response.data)
+                dispatch({ type: 'SET_TODO', payload: [response.data.data] });
                 } catch (err) {
                 console.log(err);
                 }
@@ -36,8 +37,8 @@ const Home = () => {
                 {todos && todos.length === 0 ? (
                     <p className="error">No todo found</p>
                     ) : (
-                    todos && todos.map((todo) => (
-                    <TodoDetails key={todo._id} todo={todo} />
+                    Array.isArray(todos) && todos.map((todo) => (
+                    <TodoDetails key={todo?._id} todo={todo} />
                     ))
                 )}
                 
