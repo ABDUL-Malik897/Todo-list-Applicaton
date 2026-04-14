@@ -37,7 +37,7 @@ const Home = () => {
         <div className='home'>
             <div className='todos'>
                 {loading ? (
-                    <div className='loading'></div>   
+                    <div className='loading'><div></div></div>   
                 ) :
                 todos && todos.length === 0 ? (
                     <p className="error">No todo found</p>
