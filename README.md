@@ -148,7 +148,7 @@ max-height: 300px;
 
 1. Start backend → `npm run dev`
 2. Start frontend → `npm start`
-3. Open browser → `https://todo-list-appln.vercel.app/`
+3. Open browser → `https://xyz-nine-mu.vercel.app`
 
 ---
 
