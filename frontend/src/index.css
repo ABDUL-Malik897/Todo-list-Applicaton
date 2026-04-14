@@ -79,6 +79,9 @@ header a {
     min-height: 200px;
     background-color: #e4d1d1;
     border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
 }
 .todo-details{
     background-color: #fff;
