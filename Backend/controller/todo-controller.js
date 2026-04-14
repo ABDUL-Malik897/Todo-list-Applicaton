@@ -3,7 +3,7 @@ const todoServices = require("../services/todo-services")
 //? get all Todos
 exports.getAllTodos = async (req,res) => {
     try{
-    const todos = await todoServices.getAllTodos().sort({ createdAt: -1 })
+    const todos = await todoServices.getAllTodos()
     if(!todos || todos.length === 0){
         return res.status(404).json({
             success: false,
