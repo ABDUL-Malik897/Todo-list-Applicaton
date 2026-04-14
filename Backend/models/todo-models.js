@@ -5,15 +5,11 @@ const Schema = mongoose.Schema
 const TodoSchema = new Schema ({
     Title:{
         type : String,
-        required : true,
-        minlength: 3,
-        trim: true
+        required : true
     },
     Content:{
         type : String,
-        required : true,
-        minlength: 5,
-        trim: true
+        required : true
     },
     Completed:{
         type : Boolean,
