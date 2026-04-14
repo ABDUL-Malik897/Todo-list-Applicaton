@@ -12,59 +12,46 @@ This is a full-stack To-Do List application that allows users to create, update,
 
 ##  Setup & Installation
 
-###  Clone the Repository
+### Dependencies 
 
-```bash
-git clone <your-repo-url>
-cd assignment
-```
+#### Frontend
 
----
+>> npm i axios
 
-### Backend Setup
+Used to make HTTP requests (GET, POST, etc.) to communicate with backend APIs.
 
-```bash
-cd backend
-npm install
-```
+>> npm i date-fns
 
-#### Environment Variables
+Provides simple utilities to format, parse, and manipulate dates.
 
-Create a `.env` file inside the backend folder and add:
+>> npm i react-router-dom
 
-```
-PORT=4000
-MONGO_URI=your_mongodb_connection_string
-```
+Enables navigation and routing between different pages in a React app.
 
-#### Run Backend
 
-```bash
-npm run dev
-```
+#### Backend
 
----
+>> npm i cors
 
-###  Frontend Setup
+Allows frontend and backend to communicate across different origins (domains).
 
-```bash
-cd frontend
-npm install
-```
+>> npm i dotenv
 
-#### Configuration
+Loads environment variables from a .env file into your application.
 
-If using proxy (recommended), ensure in `package.json`:
+>> npm i express
 
-```
-"proxy": "http://localhost:4000"
-```
+Lightweight framework to build APIs and handle server-side logic.
 
-####  Run Frontend
+>> npm i mongoDB
 
-```bash
-npm start
-```
+NoSQL database used to store application data in JSON-like format.
+
+>> npm i mongoose
+
+ODM library to define schemas and interact with MongoDB easily.
+
+ 
 
 ---
 
