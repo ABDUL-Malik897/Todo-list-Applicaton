@@ -67,9 +67,6 @@ header a {
     direction: ltr;
 }
 .loading div{
-    align-items: center;
-    align-content: center;
-    justify-content: center;
     width: 90%;
     height: 90%;
     min-height: 180px;
