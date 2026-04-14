@@ -14,7 +14,7 @@ console.log(process.env.MONGO_URL);
 app.use(cors({
     origin: [
         `http://localhost:3000`,
-        "https://xyz-nine-mu.vercel.app/"
+        "https://xyz-nine-mu.vercel.app"
     ]
 }));
 
