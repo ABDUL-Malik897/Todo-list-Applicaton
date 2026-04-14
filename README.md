@@ -16,7 +16,7 @@ This is a full-stack To-Do List application that allows users to create, update,
 
 #### Frontend
 
->> npm i axios
+> npm i axios
 
 Used to make HTTP requests (GET, POST, etc.) to communicate with backend APIs.
 
