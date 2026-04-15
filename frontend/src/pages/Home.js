@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import axios from 'axios'
 
 
@@ -8,37 +8,45 @@ import TodoForm from '../Components/TodoForm';
 import { useTodosContext } from '../Hooks/useTodoContext';
 
 const BASE_URL = process.env.REACT_APP_API_URL
-console.log(BASE_URL);
+// console.log(BASE_URL);
 
 const Home = () => {
-    // const [query ,setQuery] = useState("")
-    const {todos , dispatch , search  } = useTodosContext()
-    const [loading ,setLoading] = useState(false)
+    const {todos , dispatch , search ,loading , error } = useTodosContext()
+    // const [loading ,setLoading] = useState(false)
     useEffect(() => {
         const fetchTODOs = async () => {
             try {
-                setLoading(true)
+                dispatch({type : "SET_LOADING"})
                 let url = `${BASE_URL}/api/todos`;
 
                 if (search) {
                 url = `${BASE_URL}/api/todos/search?q=${search}`;
                 }
                 const response = await axios.get(url);
-                console.log(response.data)
+                // console.log(response.data)
                 dispatch({ type: 'SET_TODO', payload: response.data.data});
                 } catch (err) {
-                console.log(err);
-                } finally{setLoading(false)}
+                    dispatch({type :"SET_ERROR",
+                        payload : "Failed to fetch todos" 
+                    })
+                // console.log(err);
+                } 
         };
         fetchTODOs()
     },[dispatch,search])
 
+    if (loading) {
+    return <h2 style={{ textAlign: "center" }}>Loading...</h2>;
+    }
+
+    if (error) {
+    return <h2 style={{ color: "red", textAlign: "center" }}>{error}</h2>;
+    }
+
     return (
         <div className='home'>
             <div className='todos'>
-                {loading ? (
-                    <div className='loading'><div></div><div></div><div></div></div>   
-                ) :
+                {
                 todos && todos.length === 0 ? (
                     <p className="error">No todo found</p>
                     ) : (

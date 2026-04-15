@@ -1,15 +1,16 @@
 import axios from 'axios'
 import React, { useState } from 'react'
 import { useTodosContext } from '../Hooks/useTodoContext'
-import TodoForm from './TodoForm'
+// import TodoForm from './TodoForm'
 
-import formatDistaneToNow from "date-fns/formatDistanceToNow"
+import formatDistanceToNow from "date-fns/formatDistanceToNow"
 const BASE_URL = process.env.REACT_APP_API_URL
 
 const TodoDetails = ({todo}) => {
     
     const { dispatch } = useTodosContext();
-    const {setError} = TodoForm()
+    // const {setError} = TodoForm()
+    const [error , setError]  = useState(null)
     const [updation, setUpdation] = useState(false)
     const [Title, setTitle] = useState(todo.Title)
     const [Content, setContent] = useState(todo.Content)
@@ -21,7 +22,9 @@ const TodoDetails = ({todo}) => {
         await axios.delete(`${BASE_URL}/api/todos/${todo._id}`)
         dispatch({type : 'DELETE_TODO' , payload : todo._id})
         }catch(error){
-            setError(error.response?.data?.message);
+            setError(error.response?.data?.errors?.[0]?.msg || error.response?.data?.message ||
+                    "Something went wrong"
+                );
         }
     }
     const handleUpdate = async () => {
@@ -35,22 +38,21 @@ const TodoDetails = ({todo}) => {
     setUpdation(false)
 
     } catch (error) {
-    console.log(error)
+    console.log(error?.response?.data?.errors?.[2]?.msg)
     }}
-    const changingStatus = async () => {
-        // console.log("clicked");
-        
+    const changingStatus = async () => {        
         try {
             const response = await axios.put(`${BASE_URL}/api/todos/${todo._id}`, {
                 Completed: !todo.Completed,
             })
             dispatch({ type: "UPDATE_TODO", payload: response.data.data })
         } catch (error) {
-            console.log(error)
+            console.log(error?.response?.data?.errors?.[0]?.msg)
         }
-}
+    }
     return (
         <div className='todo-details'>
+            {error && <p style={{ color: "red" }}>{error}</p>}
             <span onClick={handleDelete} className="deleting"><ion-icon name="trash-outline"></ion-icon></span>
             {updation ?
             (
@@ -77,7 +79,7 @@ const TodoDetails = ({todo}) => {
                     </label>
                     </p><br/>
                     <p>{todo.createdAt && (
-                            formatDistaneToNow(new Date(todo.createdAt), { addSuffix: true })
+                            formatDistanceToNow(new Date(todo.createdAt), { addSuffix: true })
                         )}</p>
                     </>
             )}

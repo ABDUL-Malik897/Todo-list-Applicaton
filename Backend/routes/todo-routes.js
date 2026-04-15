@@ -18,7 +18,7 @@ router.get('/:id',getSingleTodoById)
 
 //? POST
 
-router.post('/',addNewTodo)
+router.post('/', ...addNewTodo)
 
 
 //? PUT 

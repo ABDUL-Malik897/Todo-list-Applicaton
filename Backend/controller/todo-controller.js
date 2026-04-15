@@ -1,26 +1,25 @@
 // const todoModels = require("../models/todo-models");
 const todoServices = require("../services/todo-services")
+const { body , validationResult } = require("express-validator")
+
 //? get all Todos
 exports.getAllTodos = async (req,res) => {
     try{
-    const todos = await todoServices.getAllTodos()
+    const todos = await todoServices.getAllTodos()    //todo -- fetching the todos using the service created  else it was to separate API logic from UI code.
     if(!todos || todos.length === 0){
         return res.status(404).json({
             success: false,
-            message: "No todos found",
-            data: null
+            message: "No todos found"
         })
-    }
+    }                                                   
     res.status(200).json({
         success: true,
         message: "Todos fetched successfully",
         data: todos
-    })
-    } catch (err){
+    })} catch (err){
     res.status(500).json({
         success: false,
-        message: err.message || "Internal Error",
-        data: null
+        message: err.message || "Some Internal Error"
     });
     }
 };
@@ -33,8 +32,7 @@ exports.getSingleTodoById = async (req,res) => {
     if(!todo){
         return res.status(404).json({
             success: false,
-            message: "Todo not found",
-            data: null  
+            message: "Todo not found"  
         })
     }
     res.status(200).json({
@@ -44,71 +42,109 @@ exports.getSingleTodoById = async (req,res) => {
     })}
     catch(err){res.status(500).json({
         success: false,
-        message: err.message || "Internal error",
-        data: null
+        message: err.message || "Internal error something"
     });
     }
 };
 
 //? create a new Todo
-exports.addNewTodo = async (req,res) => {
-    try{
-    const { Title , Content , Completed } = req.body
-    if(!Title || !Content || Completed === undefined){
-        res.status(400).json({
-            success: false,
-            message: "Please provide all required fields",
-            data: null
+exports.addNewTodo = [
+    body("Title")                            //?   Validation rules
+    .notEmpty()
+    // .optional()
+    .withMessage("Title is required")
+    .isLength({ min: 3 })
+    .withMessage("Title must be at least 3 characters"),
 
-        })
-    }
-    const saved = await todoServices.createTodo({Title,Content,Completed})
-    res.status(201).json({
-        success: true,
-        message: "Todo created successfully",
-        data: saved
-    })}catch(error){
-    res.status(500).json({
-        success: false,
-        message: error.message || "Internal error",
-        data: null
-    });
-    }}
+    body("Content")
+    .notEmpty()
+    .withMessage("Content is required"),
 
-//? update a existing todo
-exports.updateTodoById = async (req,res) => {
-    try{
-    const { id } = req.params
-    const data  = req.body
-    
-    if(!data|| Object.keys(data).length === 0 ){
+    async (req, res) => {                   //*  Main function
+    try {
+        const errors = validationResult(req);   // Check validation errors
+        // console.log("VALIDATION:", errors.array());
+        if (!errors.isEmpty()) {
         return res.status(400).json({
             success: false,
-            message: "Please provide data to update",
-            data: null
-        })
-    }
-    const updateTodo = await todoServices.updateTodo(id,data)
-    if(!updateTodo){
-        return res.status(404).json({
-            success: false,
-            message: `No Todo with id: ${id}`,
-            data: null
-        })
-    }
-    res.status(200).json({
-            success: true,
-        message: "Todo updated successfully",
-        data: updateTodo
-        })}
-    catch(err){
+            errors: errors.array()
+        });
+        }
+        const todo = await todoServices.createTodo(req.body);
+
+        res.status(201).json({
+        success: true,
+        data: todo
+        });
+    } catch (error) {
+        console.error("Error creating todo:", error.message);
         res.status(500).json({
         success: false,
-        message: err.message || "Internal error",
-        data: null
-    });
+        message: "Server error while creating todo"
+        });
     }
-};
+    }
+]
+
+//? update a existing todo
+exports.updateTodoById = [
+
+  //  Validation rules
+    body("Title")
+    .optional()
+    .isLength({ min: 3 })
+    .withMessage("Title must be at least 3 characters"),
+
+    body("Content")
+    .optional()
+    .notEmpty()
+    .withMessage("Content cannot be empty"),
+
+    //  Main function
+    async (req, res) => {
+    try {
+        const errors = validationResult(req);
+
+        //  ADD THIS
+        if (!errors.isEmpty()) {
+        return res.status(400).json({
+            success: false,
+            errors: errors.array()
+        });
+        }
+        const { id } = req.params;
+        const data = req.body;
+
+        if (!data || Object.keys(data).length === 0) {
+        return res.status(400).json({
+            success: false,
+            message: "Please provide data to update"
+        });
+        }
+
+        const updateTodo = await todoServices.updateTodo(id, data);
+
+        if (!updateTodo) {
+        return res.status(404).json({
+            success: false,
+            message: `No Todo with id: ${id}`
+        });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Todo updated successfully",
+            data: updateTodo
+        });
+
+    } catch (err) {
+        res.status(500).json({
+        success: false,
+        message: err.message || "Internal error"
+        });
+    }
+    }
+];
 
 //? delete a todo
 exports.deleteTodoById = async (req, res) => {
@@ -120,8 +156,7 @@ exports.deleteTodoById = async (req, res) => {
     if (!deletedTodo) {
         return res.status(404).json({
             success: false,
-            message: "Todo not found",
-            data: null
+            message: "Todo not found"
         });
     }
 
@@ -134,8 +169,7 @@ exports.deleteTodoById = async (req, res) => {
     } catch (err) {
     res.status(500).json({
         success: false,
-        message: err.message || "Internal error",
-        data: null
+        message: err.message || "Internal error something"
     });
     }
 };
@@ -147,8 +181,7 @@ exports.searchTodos = async (req, res) => {
     if (!q) {
         return res.status(400).json({
             success: false,
-            message: "Search query is required",
-            data: null
+            message: "Search query is required"
         });
     }
 
@@ -163,8 +196,7 @@ exports.searchTodos = async (req, res) => {
     } catch (err) {
     res.status(500).json({
         success: false,
-        message: err.message || "Internal error",
-        data: null
+        message: err.message || "Internal error"
     });
     }
 };

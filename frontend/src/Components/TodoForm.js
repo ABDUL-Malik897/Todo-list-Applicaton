@@ -5,7 +5,7 @@ import { useTodosContext } from '../Hooks/useTodoContext'
 const BASE_URL = process.env.REACT_APP_API_URL
 const TodoForm = () => {
     
-
+    const [loading ,setLoading] =useState(false)
     const { dispatch } = useTodosContext()
     const [Title , setTitle] = useState('')
     const [Content,setContent] = useState('')
@@ -16,15 +16,24 @@ const TodoForm = () => {
         e.preventDefault()
         const todo = { Title , Content , Completed }
         try{
-        const response = await axios.post(`${BASE_URL}/api/todos/`,todo) 
-        console.log(response.data)
+            setLoading(true)
+            // await new Promise(resolve => setTimeout(resolve, 1000));
+        const response = await axios.post(`${BASE_URL}/api/todos`,todo) 
+        // console.log(response.data)
         setError(null)
         setTitle('')
         setContent('')
         setCompleted(false)
         dispatch({type : 'CREATE_TODO', payload : response.data.data })
         }catch(err){
-            setError(err.response?.data?.message)
+            setError(
+                    err?.response?.data?.errors?.map(e => e.msg).join(", ")||
+                    err?.response?.data?.message ||
+                    // err.message ||
+                    "Something went wrong"
+                );
+        } finally{
+            setLoading(false)
         }
 
     }
@@ -43,7 +52,7 @@ const TodoForm = () => {
             <input type="radio"  name="status"  value="true"  checked={Completed === true}  onChange={() => setCompleted(true)}/> Completed
             <input  type="radio"  name="status"  value="false"  checked={Completed === false}  onChange={() => setCompleted(false)}/> Pending
             </div>
-            <button>Add Todo</button>
+            <button disabled={loading}>{loading ? "Adding..." :"Add Todo"}</button>
             {error && <p className="error">{error}</p>}
         </form>
     )

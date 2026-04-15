@@ -6,6 +6,14 @@ export const TodoContext = createContext()
 
 export const TodoReducer = (state,action) =>{
     switch (action.type) {
+        case "SET_LOADING":
+            return {
+                ...state, loading: true
+            };
+            case "SET_ERROR":
+                return {
+                ...state, loading: false, error: action.payload
+            };
         case 'SET_TODO':
             return {
                 todos : action.payload 
@@ -31,7 +39,9 @@ export const TodoReducer = (state,action) =>{
 
 export const TodoContextProvider = ({children}) => {
     const [state ,dispatch] = useReducer(TodoReducer,{
-        todos : []
+        todos : [],
+        loading : false,
+        error : null
     })
     const [search, setSearch] = useState("")
     return(

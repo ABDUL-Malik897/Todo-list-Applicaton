@@ -1,4 +1,5 @@
 const todoModels = require("../models/todo-models");
+const mongoose = require('mongoose');
 
 //? get all todos
 exports.getAllTodos = async () => {
@@ -7,6 +8,9 @@ exports.getAllTodos = async () => {
 
 //? get single todo
 exports.getTodoById = async (id) => {
+    if(!mongoose.Types.ObjectId.isValid(id)){
+        throw new Error("Invalid Todo ID Format")
+    }
     return await todoModels.findById(id);
 };
 
@@ -17,11 +21,17 @@ exports.createTodo = async (data) => {
 
 //? update todo
 exports.updateTodo = async (id, data) => {
+    if(!mongoose.Types.ObjectId.isValid(id)){
+        throw new Error("Invalid Todo ID Format")
+    }
     return await todoModels.findByIdAndUpdate(id, data, { new: true });
 };
 
 //? delete todo
 exports.deleteTodo = async (id) => {
+    if(!mongoose.Types.ObjectId.isValid(id)){
+        throw new Error("Invalid Todo ID Format")
+    }
     return await todoModels.findByIdAndDelete(id);
 };
 
