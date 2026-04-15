@@ -70,6 +70,20 @@ ODM library to define schemas and interact with MongoDB easily.
 
     
 ---
+
+## Environment Variable
+
+####  Backend Env
+
+    >> MONGO_URL=mongodb+srv://AbdulMalik:NJd6Gt8Nervwr2OW@cluster0.abwfplh.mongodb.net/?appName=Cluster0
+
+    >> PORT=4000
+
+#### Frontend Env
+
+    >> REACT_APP_API_URL=https://xyz-8x1y.onrender.com
+
+---
 ##  Features
 
 * Add new tasks
